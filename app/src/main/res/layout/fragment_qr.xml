@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey">
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/prl_qr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_qr"
+            android:layout_centerInParent="true"
+            app:layout_aspectRatio="100%"
+            app:layout_widthPercent="80%" />
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_qr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="#3F51B5"
+        app:srcCompat="@drawable/ic_fab_qr" />
+
+</RelativeLayout>
