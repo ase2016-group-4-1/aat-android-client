@@ -5,7 +5,5 @@ package de.tum.ase.aatqrgenerator.support;
  */
 
 public class AppConstants {
-    public static final String CUSTOM_PREFERENCES = "customPreferences";
-    public static final String USER_LOGGED_IN = "userLoggedIn";
-    public static final int USER_LOG_OUT = 2000;
+    public static final String OAUTH_WEB_CLIENT_ID = "258826331101-bsakcabrvr4gbl8i8v96n0mjo3gnbn6q.apps.googleusercontent.com";
 }
