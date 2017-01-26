@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+aat-android-client.iml
+app/app.iml
+build/
+local.properties
+.DS_Store
