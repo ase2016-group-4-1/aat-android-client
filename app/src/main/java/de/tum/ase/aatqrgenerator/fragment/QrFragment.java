@@ -1,7 +1,9 @@
 package de.tum.ase.aatqrgenerator.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import de.tum.ase.aatqrgenerator.R;
+import de.tum.ase.aatqrgenerator.activity.MainActivity;
 
 /**
  * Created by Dat on 15.1.2017.
@@ -49,8 +52,15 @@ public class QrFragment extends Fragment {
         final static int WIDTH = 200;
 
         @Override
+        protected void onPreExecute() {
+            progress = ProgressDialog.show(getActivity(), "Verification QR",
+                    "Generating verification QR, please wait...", true);
+        }
+
+        @Override
         protected Bitmap doInBackground(String... params) {
             try {
+                Thread.sleep(1000);
                 BitMatrix result;
                 try {
                     result = new MultiFormatWriter().encode(params[0],
@@ -67,15 +77,14 @@ public class QrFragment extends Fragment {
                     int offset = y * w;
                     for (int x = 0; x < w; x++) {
                         pixels[offset + x] = result.get(x, y)
-                                ? ContextCompat.getColor(getActivity(), R.color.black)
-                                : ContextCompat.getColor(getActivity(), R.color.white);
+                                ? Color.BLACK : Color.WHITE;
                     }
                 }
                 Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
                 bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
                 return bitmap;
 
-            } catch (WriterException e) {
+            } catch (InterruptedException | WriterException e) {
                 e.printStackTrace();
             }
             return null;

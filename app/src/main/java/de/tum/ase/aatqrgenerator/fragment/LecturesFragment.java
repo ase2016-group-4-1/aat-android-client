@@ -1,5 +1,6 @@
 package de.tum.ase.aatqrgenerator.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class LecturesFragment extends Fragment {
 
     private ApiService apiService;
 
+    private ProgressDialog progress;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +40,18 @@ public class LecturesFragment extends Fragment {
         apiService.setLectureListener(new ApiService.ApiLecturesListener() {
                @Override
                public void gotLectures(final List<Lecture> lectures) {
+                   //TODO delete this try-catch block, only for testing
+                   try {
+                       Thread.sleep(1000);
+                   } catch (InterruptedException e) {
+                       Log.e("SLEEP", e.getMessage());
+                   }
+                   progress.dismiss();
                    if(getActivity() != null) {
                        getActivity().runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
+
                                adapter.clear();
                                adapter.addAll(lectures);
                                adapter.notifyDataSetChanged();
@@ -61,12 +71,17 @@ public class LecturesFragment extends Fragment {
 
             @Override
             public void notSignedIn() {
+                if(progress != null && progress.isShowing()) progress.dismiss();
                 Log.d("LectureFragment", "Not signed in");
             }
         });
+
         if(UserService.currentAccount != null){
             apiService.setToken(UserService.currentAccount.getIdToken());
         }
+        progress = ProgressDialog.show(getActivity(), "Lectures",
+                "Loading available lectures, please wait...", true);
+        Log.d("ONCREATE", "33333333333333");
         apiService.getLectures();
     }
 
@@ -114,9 +129,11 @@ public class LecturesFragment extends Fragment {
     }
 
     public void reload() {
-        if(UserService.currentAccount != null){
-            apiService.setToken(UserService.currentAccount.getIdToken());
-        }
-        apiService.getLectures();
+//        if(UserService.currentAccount != null){
+//            apiService.setToken(UserService.currentAccount.getIdToken());
+//        }
+//        progress = ProgressDialog.show(getActivity(), "Lectures fff",
+//                "Loading available lectures, please wait...", true);
+//        apiService.getLectures();
     }
 }

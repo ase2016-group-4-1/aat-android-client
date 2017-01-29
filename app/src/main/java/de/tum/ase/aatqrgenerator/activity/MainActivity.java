@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -29,10 +30,8 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private UserService userService;
-    private ApiService apiService;
 
     private ProgressDialog progress;
-    private MenuItem navUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +64,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void userSignInSuccess(GoogleSignInAccount account) {
                 progress.dismiss();
+                Log.d("POP", "1111111111111111");
                 populateViewsAuthenticated();
             }
 
@@ -83,12 +83,14 @@ public class MainActivity extends AppCompatActivity
                     "Signing in, please wait...", true);
             userService.silentSignIn();
         } else {
+            Log.d("POP", "2222222222222");
             populateViewsAuthenticated();
         }
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Lectures");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -113,10 +115,15 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (getFragmentManager().getBackStackEntryCount() > 0) {
-                getFragmentManager().popBackStack();
+            super.onBackPressed();
+
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
+            if(f instanceof LecturesFragment){
+                getSupportActionBar().setTitle("Lectures");
+            } else if(f instanceof QrFragment) {
+                getSupportActionBar().setTitle("Verification QR");
             } else {
-                super.onBackPressed();
+                getSupportActionBar().setTitle("AAT");
             }
         }
     }
@@ -140,9 +147,11 @@ public class MainActivity extends AppCompatActivity
 
     public void showQr(String verificationToken) {
         QrFragment qrFragment = new QrFragment();
-        qrFragment.setVerificationToken(verificationToken);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, qrFragment).addToBackStack("qr").commit();
+        getSupportFragmentManager().executePendingTransactions();
+        getSupportActionBar().setTitle("Verification QR");
+        qrFragment.setVerificationToken(verificationToken);
     }
 
     @Override
@@ -151,7 +160,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_lectures) {
-            toolbar.setTitle("Lectures");
+            getSupportActionBar().setTitle("Lectures");
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new LecturesFragment()).addToBackStack("lecture").commit();
         } /*else if(id == R.id.nav_user) {

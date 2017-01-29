@@ -2,15 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
-    <TextView
-        android:id="@+id/lecture_semester"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="10sp"/>
+    android:padding="16dp"
+    android:background="@android:color/white">
     <TextView
         android:id="@+id/lecture_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"/>
+        android:textSize="20sp"
+        android:text="ASE"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/lecture_semester"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:text="WS-16/17"/>
 </LinearLayout>

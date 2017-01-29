@@ -20,19 +20,11 @@
         <ImageView
             android:id="@+id/iv_qr"
             android:layout_centerInParent="true"
-            android:background="@drawable/logo"
+            android:background="@drawable/logo_v4"
             app:layout_aspectRatio="100%"
             app:layout_widthPercent="30%" />
 
     </android.support.percent.PercentRelativeLayout>
 
-    <!--
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-        -->
 
 </LinearLayout>
