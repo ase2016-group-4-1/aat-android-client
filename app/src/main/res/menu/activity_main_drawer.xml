@@ -3,19 +3,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_lectures"
-            android:title="Lectures" />
-        <!--item
-            android:id="@+id/nav_qr"
-            android:icon="@drawable/ic_nav_qr"
-            android:title="Get Code" />
-        <item
-            android:id="@+id/nav_user"
-            android:icon="@drawable/ic_nav_user"
-            android:title="User Info" />
-        <item
-            android:id="@+id/nav_setting"
-            android:icon="@drawable/ic_nav_setting"
-            android:title="Settings" /-->
+            android:title="Lectures"
+            android:icon="@drawable/ic_lectures"/>
     </group>
 
     <item android:title="">
