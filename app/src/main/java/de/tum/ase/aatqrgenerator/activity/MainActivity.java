@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -21,8 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import de.tum.ase.aatqrgenerator.R;
 import de.tum.ase.aatqrgenerator.fragment.LecturesFragment;
 import de.tum.ase.aatqrgenerator.fragment.QrFragment;
-import de.tum.ase.aatqrgenerator.fragment.TemplateFragment;
-import de.tum.ase.aatqrgenerator.service.ApiService;
 import de.tum.ase.aatqrgenerator.service.UserService;
 
 public class MainActivity extends AppCompatActivity
@@ -63,15 +60,16 @@ public class MainActivity extends AppCompatActivity
         userService.setSignInListener(new UserService.UserServiceSignInListener() {
             @Override
             public void userSignInSuccess(GoogleSignInAccount account) {
+                Log.d("MainActivity", "userSignInSuccess(account)");
+                // Don't have to save account as it is already saved in UserService.currentAccount
                 progress.dismiss();
-                Log.d("POP", "1111111111111111");
                 populateViewsAuthenticated();
             }
 
             @Override
             public void userSignInFailure() {
+                Log.d("MainActivity", "userSignInFailure()");
                 progress.dismiss();
-                // Toast.makeText(MainActivity.this, "Sign in failed", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -83,7 +81,6 @@ public class MainActivity extends AppCompatActivity
                     "Signing in, please wait...", true);
             userService.silentSignIn();
         } else {
-            Log.d("POP", "2222222222222");
             populateViewsAuthenticated();
         }
 
@@ -128,23 +125,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }*/
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //noinspection SimplifiableIfStatement
-        if (item.getItemId() == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
     public void showQr(String verificationToken) {
         QrFragment qrFragment = new QrFragment();
         getSupportFragmentManager().beginTransaction()
@@ -163,15 +143,7 @@ public class MainActivity extends AppCompatActivity
             getSupportActionBar().setTitle("Lectures");
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new LecturesFragment()).addToBackStack("lecture").commit();
-        } /*else if(id == R.id.nav_user) {
-            toolbar.setTitle("User Info");
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, new TemplateFragment()).commit();
-        } else if(id == R.id.nav_setting) {
-            toolbar.setTitle("Settings");
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, new TemplateFragment()).commit();
-        }*/ else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             progress = ProgressDialog.show(this, "Google Sign in",
                     "Signing out, please wait...", true);
             userService.signOut();
