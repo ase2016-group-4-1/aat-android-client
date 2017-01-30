@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class QrFragment extends Fragment {
 
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
+        Log.d("QrFragment", "verificationToken: " + verificationToken);
         new GenerateQr().execute(verificationToken);
     }
 
@@ -53,14 +55,14 @@ public class QrFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            progress = ProgressDialog.show(getActivity(), "Verification QR",
-                    "Generating verification QR, please wait...", true);
+            /*progress = ProgressDialog.show(getActivity(), "Verification QR",
+                    "Generating verification QR, please wait...", true);*/
         }
 
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
-                Thread.sleep(1000);
+                // Thread.sleep(1000);
                 BitMatrix result;
                 try {
                     result = new MultiFormatWriter().encode(params[0],
@@ -84,7 +86,7 @@ public class QrFragment extends Fragment {
                 bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
                 return bitmap;
 
-            } catch (InterruptedException | WriterException e) {
+            } catch (/*InterruptedException |*/ WriterException e) {
                 e.printStackTrace();
             }
             return null;

@@ -40,12 +40,6 @@ public class LecturesFragment extends Fragment {
         apiService.setLectureListener(new ApiService.ApiLecturesListener() {
                @Override
                public void gotLectures(final List<Lecture> lectures) {
-                   //TODO delete this try-catch block, only for testing
-                   try {
-                       Thread.sleep(1000);
-                   } catch (InterruptedException e) {
-                       Log.e("SLEEP", e.getMessage());
-                   }
                    progress.dismiss();
                    if(getActivity() != null) {
                        getActivity().runOnUiThread(new Runnable() {
@@ -64,6 +58,7 @@ public class LecturesFragment extends Fragment {
         apiService.setAttendanceListener(new ApiService.ApiAttendanceListener() {
             @Override
             public void attendanceCreated(String verificationToken) {
+                Log.d("LecturesFragment", "attendance created with verification token: " + verificationToken);
                 if(getActivity() instanceof MainActivity){
                     ((MainActivity) getActivity()).showQr(verificationToken);
                 }
@@ -78,11 +73,10 @@ public class LecturesFragment extends Fragment {
 
         if(UserService.currentAccount != null){
             apiService.setToken(UserService.currentAccount.getIdToken());
+            progress = ProgressDialog.show(getActivity(), "Lectures",
+                    "Loading available lectures, please wait...", true);
+            apiService.getLectures();
         }
-        progress = ProgressDialog.show(getActivity(), "Lectures",
-                "Loading available lectures, please wait...", true);
-        Log.d("ONCREATE", "33333333333333");
-        apiService.getLectures();
     }
 
     @Nullable
@@ -110,8 +104,10 @@ public class LecturesFragment extends Fragment {
                 }
                 if(hasActiveSession && isEnrolled){
                     if(activeSession.attendance.status.contentEquals("none")) {
+                        Log.d("LecturesFragment", "creating attendance");
                         apiService.attend(activeSession.attendanceUrl);
                     } else {
+                        Log.d("LecturesFragment", "attendance already exists with verification token: " + activeSession.attendance.verificationToken);
                         if(getActivity() instanceof MainActivity){
                             ((MainActivity) getActivity()).showQr(activeSession.attendance.verificationToken);
                         }
