@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         userService = new UserService(this);
+
         userService.setSignOutListener(new UserService.UserServiceSignOutListener() {
             @Override
             public void userSignOutSuccess() {
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "Sign out failed", Toast.LENGTH_SHORT).show();
             }
         });
+
         userService.setSignInListener(new UserService.UserServiceSignInListener() {
             @Override
             public void userSignInSuccess(GoogleSignInAccount account) {
@@ -76,15 +78,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        if(UserService.currentAccount == null) {
-            progress = ProgressDialog.show(this, "Google Sign in",
-                    "Signing in, please wait...", true);
-            userService.silentSignIn();
-        } else {
-            populateViewsAuthenticated();
-        }
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Lectures");
@@ -97,6 +90,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(UserService.currentAccount == null) {
+            progress = ProgressDialog.show(this, "Google Sign in",
+                    "Signing in, please wait...", true);
+            userService.silentSignIn();
+        } else {
+            populateViewsAuthenticated();
+        }
     }
 
     private void populateViewsAuthenticated(){

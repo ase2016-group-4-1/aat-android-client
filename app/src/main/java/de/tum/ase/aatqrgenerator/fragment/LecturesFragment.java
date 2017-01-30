@@ -6,12 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,10 @@ import de.tum.ase.aatqrgenerator.service.ApiService;
 import de.tum.ase.aatqrgenerator.service.UserService;
 
 public class LecturesFragment extends Fragment {
+
     private ListView lectureListView;
     private LectureListAdapter adapter;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private ApiService apiService;
 
@@ -40,11 +44,14 @@ public class LecturesFragment extends Fragment {
         apiService.setLectureListener(new ApiService.ApiLecturesListener() {
                @Override
                public void gotLectures(final List<Lecture> lectures) {
-                   progress.dismiss();
                    if(getActivity() != null) {
                        getActivity().runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
+
+                               if(progress != null && progress.isShowing()) progress.dismiss();
+                               if(swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing())
+                                   swipeRefreshLayout.setRefreshing(false);
 
                                adapter.clear();
                                adapter.addAll(lectures);
@@ -55,6 +62,7 @@ public class LecturesFragment extends Fragment {
                }
            }
         );
+
         apiService.setAttendanceListener(new ApiService.ApiAttendanceListener() {
             @Override
             public void attendanceCreated(String verificationToken) {
@@ -67,16 +75,18 @@ public class LecturesFragment extends Fragment {
             @Override
             public void notSignedIn() {
                 if(progress != null && progress.isShowing()) progress.dismiss();
+                if(swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing())
+                    swipeRefreshLayout.setRefreshing(false);
                 Log.d("LectureFragment", "Not signed in");
             }
         });
 
-        if(UserService.currentAccount != null){
-            apiService.setToken(UserService.currentAccount.getIdToken());
-            progress = ProgressDialog.show(getActivity(), "Lectures",
-                    "Loading available lectures, please wait...", true);
-            apiService.getLectures();
-        }
+//        if(UserService.currentAccount != null){
+//            apiService.setToken(UserService.currentAccount.getIdToken());
+//            progress = ProgressDialog.show(getActivity(), "Lectures",
+//                    "Loading available lectures, please wait...", true);
+//            apiService.getLectures();
+//        }
     }
 
     @Nullable
@@ -121,15 +131,32 @@ public class LecturesFragment extends Fragment {
             }
         });
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                LecturesFragment.this.reload();
+            }
+        });
+
         return view;
     }
 
     public void reload() {
-//        if(UserService.currentAccount != null){
-//            apiService.setToken(UserService.currentAccount.getIdToken());
-//        }
-//        progress = ProgressDialog.show(getActivity(), "Lectures fff",
-//                "Loading available lectures, please wait...", true);
-//        apiService.getLectures();
+        if(UserService.currentAccount != null){
+            apiService.setToken(UserService.currentAccount.getIdToken());
+            if(swipeRefreshLayout == null || !swipeRefreshLayout.isRefreshing()) {
+                progress = ProgressDialog.show(getActivity(), "Lectures",
+                        "Loading available lectures, please wait...", true);
+            }
+            apiService.getLectures();
+        } else {
+            if(swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing())
+                swipeRefreshLayout.setRefreshing(false);
+            //TODO sign in again?
+            Toast.makeText(getActivity(), "User not signed in", Toast.LENGTH_SHORT).show();
+            Log.d("LectureFragment", "User not signed in");
+        }
     }
 }
