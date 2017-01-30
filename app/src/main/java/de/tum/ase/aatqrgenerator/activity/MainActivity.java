@@ -35,11 +35,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new LecturesFragment()).commit();
-        }
-
         userService = new UserService(this);
 
         userService.setSignOutListener(new UserService.UserServiceSignOutListener() {
@@ -91,25 +86,30 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if(UserService.currentAccount == null) {
+        if (UserService.currentAccount == null) {
             progress = ProgressDialog.show(this, "Google Sign in",
                     "Signing in, please wait...", true);
             userService.silentSignIn();
         } else {
             populateViewsAuthenticated();
         }
+
     }
 
-    private void populateViewsAuthenticated(){
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if(fragment instanceof LecturesFragment){
-            ((LecturesFragment) fragment).reload();
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void populateViewsAuthenticated() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, new LecturesFragment()).commit();
+        getSupportActionBar().setTitle("Lectures");
     }
 
     @Override
@@ -121,9 +121,9 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
 
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
-            if(f instanceof LecturesFragment){
+            if (f instanceof LecturesFragment) {
                 getSupportActionBar().setTitle("Lectures");
-            } else if(f instanceof QrFragment) {
+            } else if (f instanceof QrFragment) {
                 getSupportActionBar().setTitle("Verification QR");
             } else {
                 getSupportActionBar().setTitle("AAT");

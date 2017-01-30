@@ -81,12 +81,7 @@ public class LecturesFragment extends Fragment {
             }
         });
 
-//        if(UserService.currentAccount != null){
-//            apiService.setToken(UserService.currentAccount.getIdToken());
-//            progress = ProgressDialog.show(getActivity(), "Lectures",
-//                    "Loading available lectures, please wait...", true);
-//            apiService.getLectures();
-//        }
+        reload();
     }
 
     @Nullable
