@@ -65,10 +65,15 @@ public class LecturesFragment extends Fragment {
 
         apiService.setAttendanceListener(new ApiService.ApiAttendanceListener() {
             @Override
-            public void attendanceCreated(String verificationToken) {
+            public void attendanceCreated(final String verificationToken) {
                 Log.d("LecturesFragment", "attendance created with verification token: " + verificationToken);
                 if(getActivity() instanceof MainActivity){
-                    ((MainActivity) getActivity()).showQr(verificationToken);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((MainActivity) getActivity()).showQr(verificationToken);
+                        }
+                    });
                 }
             }
 
